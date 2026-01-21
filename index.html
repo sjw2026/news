@@ -421,7 +421,7 @@ function makeItemRow(it, prev, leftLabel, showSectionChip){
         ${showSectionChip ? `<span class="secChip ${secClass(it.section)}">${esc(it.section)}</span>` : ``}
         <span class="pill">${esc(it.publisher)}</span>
         <span class="pill">점수 ${Number.isFinite(it.total)?it.total:""}</span>
-        ${pubTime ? `<span class="pill">출고 ${esc(pubTime)}</span>` : ``}
+        ${pubTime ? `<span class="pill"> ${esc(pubTime)}</span>` : ``}
       </div>
     </div>`;
   return a;
