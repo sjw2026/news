@@ -8,34 +8,233 @@
 
   <style>
     :root{
-      --text:#eaf0ff; --muted:rgba(234,240,255,.7);
-      --line:rgba(255,255,255,.08); --shadow:0 10px 25px rgba(0,0,0,.35);
-      --radius:18px; --good:#2ecc71; --up:#4aa3ff; --down:#f1c40f;
+      --text:#eaf0ff;
+      --muted:rgba(234,240,255,.72);
+      --line:rgba(255,255,255,.08);
+      --shadow:0 10px 25px rgba(0,0,0,.35);
+      --radius:18px;
+      --radius2:14px;
+      --good:#2ecc71;
+      --up:#4aa3ff;
+      --down:#f1c40f;
+      --brand:#0b57d0;
+      --card:rgba(255,255,255,.05);
+      --input:rgba(16,31,56,.72);
     }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",Arial,sans-serif;background:linear-gradient(180deg,#081022,#060b16);color:var(--text)}
-    a{color:inherit;text-decoration:none}
-    header{position:sticky;top:0;z-index:10;background:rgba(6,11,22,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:14px}
-    h1{margin:0;font-size:16px;font-weight:800}
-    .badge{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:6px 10px;border-radius:999px;background:rgba(11,87,208,.2);border:1px solid rgba(11,87,208,.4);font-size:12px;font-weight:700}
-    .dot{width:7px;height:7px;border-radius:50%;background:#4aa3ff;box-shadow:0 0 0 4px rgba(74,163,255,.25)}
-    .wrap{max-width:860px;margin:0 auto;padding:12px 12px 80px}
-    .controls{margin-top:12px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:var(--radius);padding:12px;box-shadow:var(--shadow)}
-    .controls select,.controls input{width:100%;padding:12px;margin-top:8px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(16,31,56,.7);color:var(--text);font-size:14px;outline:none}
-    details.sec{margin-top:14px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
-    summary{list-style:none;cursor:pointer;padding:14px;display:flex;justify-content:space-between;align-items:center}
-    summary::-webkit-details-marker{display:none}
-    .secName{font-size:15px;font-weight:900}
-    .count{font-size:12px;color:var(--muted)}
-    a.item{display:flex;gap:10px;padding:12px;border-top:1px solid var(--line)}
-    .rank{width:34px;height:34px;border-radius:12px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-weight:900;flex:0 0 auto}
-    .title{font-size:14px;font-weight:700;line-height:1.35}
-    .meta{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
-    .pill{padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.12)}
-    .trend{font-weight:900}
-    .new{color:var(--good)} .up{color:var(--up)} .down{color:var(--down)}
-    .error{margin-top:14px;padding:12px 14px;border-radius:var(--radius);border:1px solid rgba(231,76,60,.35);background:rgba(231,76,60,.10);color:#ffd6d2;white-space:pre-wrap}
-    code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",Arial,sans-serif;
+      background:linear-gradient(180deg,#081022,#060b16);
+      color:var(--text);
+    }
+    a{ color:inherit; text-decoration:none; }
+    a:active{ opacity:.9; }
+
+    header{
+      position:sticky; top:0; z-index:10;
+      background:rgba(6,11,22,.82);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);
+      padding:14px;
+    }
+    h1{ margin:0; font-size:16px; font-weight:900; letter-spacing:.2px; }
+    .badge{
+      display:inline-flex; align-items:center; gap:6px;
+      margin-top:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(11,87,208,.2);
+      border:1px solid rgba(11,87,208,.4);
+      font-size:12px; font-weight:800;
+    }
+    .dot{
+      width:7px;height:7px;border-radius:50%;
+      background:#4aa3ff;
+      box-shadow:0 0 0 4px rgba(74,163,255,.25);
+    }
+
+    .wrap{
+      max-width:860px;
+      margin:0 auto;
+      padding:12px 12px 70px;
+    }
+
+    .panel{
+      margin-top:12px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:12px;
+      box-shadow:var(--shadow);
+    }
+
+    /* Naver search row */
+    .naverRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .naverRow form{
+      flex:1 1 auto;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin:0;
+    }
+    .input{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:var(--input);
+      color:var(--text);
+      font-size:14px;
+      outline:none;
+    }
+    .btnIcon{
+      flex:0 0 auto;
+      width:44px; height:44px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 10px 25px rgba(0,0,0,.18);
+    }
+    .btnIcon span{
+      font-size:20px;
+      transform: translateY(1px);
+    }
+
+    /* Local filter controls */
+    .controlsGrid{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    select.input{
+      appearance:none;
+    }
+    .controlsGrid > *{
+      flex:1 1 160px;
+    }
+
+    /* Section / blocks */
+    .block{
+      margin-top:14px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+    .blockHead{
+      padding:14px 14px 12px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-end;
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .blockTitle{
+      font-size:15px;
+      font-weight:950;
+      letter-spacing:.2px;
+      margin:0;
+    }
+    .blockSub{
+      margin-top:4px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .count{
+      font-size:12px;
+      color:var(--muted);
+      flex:0 0 auto;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+    }
+
+    .item{
+      display:flex;
+      gap:10px;
+      padding:12px 12px;
+      border-top:1px solid rgba(255,255,255,.08);
+      align-items:flex-start;
+    }
+    .rank{
+      width:34px;height:34px;
+      border-radius:12px;
+      background:rgba(255,255,255,.10);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:950;
+      flex:0 0 auto;
+    }
+
+    .content{ min-width:0; flex:1 1 auto; }
+    .title{
+      font-size:14px;
+      font-weight:800;
+      line-height:1.35;
+
+      /* ✅ 2줄 제한 */
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+      word-break:keep-all;
+    }
+    .meta{
+      margin-top:7px;
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      font-size:12px;
+      color:var(--muted);
+      align-items:center;
+    }
+    .pill{
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);
+    }
+    .trend{
+      font-weight:950;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+    }
+    .trend.new{ color: #c9ffe2; border-color: rgba(46,204,113,.35); background: rgba(46,204,113,.14); }
+    .trend.up{ color: #d8ecff; border-color: rgba(74,163,255,.35); background: rgba(74,163,255,.14); }
+    .trend.down{ color: #fff3c4; border-color: rgba(241,196,15,.40); background: rgba(241,196,15,.14); }
+    .trend.same{ color: var(--muted); }
+
+    .error{
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:var(--radius);
+      border:1px solid rgba(231,76,60,.35);
+      background:rgba(231,76,60,.10);
+      color:#ffd6d2;
+      white-space:pre-wrap;
+    }
+
+    @media (min-width: 720px){
+      header{ padding:16px; }
+      .wrap{ padding:14px 16px 80px; }
+      .item{ padding:14px 14px; }
+      .title{ font-size:15px; }
+    }
   </style>
 </head>
 
@@ -46,11 +245,50 @@
 </header>
 
 <div class="wrap">
-  <div class="controls">
-    <select id="sectionFilter"><option value="">전체 섹션</option></select>
-    <input id="q" placeholder="검색 (제목/언론사)" />
+
+  <!-- ✅ 네이버 검색 + 축구공 버튼 -->
+  <div class="panel">
+    <div class="naverRow">
+      <form id="naverForm" action="https://search.naver.com/search.naver" method="GET" target="_blank" rel="noreferrer noopener">
+        <input class="input" id="naverQuery" name="query" placeholder="네이버에서 검색…" />
+        <button class="btnIcon" type="submit" title="네이버 검색">
+          <span>🔎</span>
+        </button>
+      </form>
+
+      <a class="btnIcon" href="https://m.sports.naver.com/wfootball/news" target="_blank" rel="noreferrer noopener" title="여자축구 뉴스(네이버 스포츠)">
+        <span>⚽</span>
+      </a>
+    </div>
+
+    <!-- ✅ 로컬 필터(섹션/검색) -->
+    <div class="controlsGrid">
+      <select class="input" id="sectionFilter">
+        <option value="">전체 섹션</option>
+      </select>
+      <input class="input" id="q" placeholder="이 페이지에서 검색 (제목/언론사)" />
+      <select class="input" id="sort">
+        <option value="rank">정렬: 순위</option>
+        <option value="score">정렬: 점수</option>
+      </select>
+    </div>
   </div>
-  <div id="app"></div>
+
+  <!-- ✅ 전체 TOP 10 -->
+  <div class="block" id="topAllBlock">
+    <div class="blockHead">
+      <div>
+        <div class="blockTitle">전체 TOP 10</div>
+        <div class="blockSub">모든 섹션 중 점수 상위 10개</div>
+      </div>
+      <div class="count" id="topAllCount">로딩…</div>
+    </div>
+    <div id="topAllList"></div>
+  </div>
+
+  <!-- ✅ 섹션 블록이 이 아래에 렌더링 -->
+  <div id="sectionsRoot"></div>
+
 </div>
 
 <script>
@@ -65,8 +303,8 @@ const esc = s => String(s||"")
   .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 
 function showError(msg, detail){
-  const app = document.getElementById("app");
-  app.innerHTML = `<div class="error"><b>오류</b>\n${esc(msg)}${detail?`\n\n${esc(detail)}`:""}</div>`;
+  const root = document.getElementById("sectionsRoot");
+  root.innerHTML = `<div class="error"><b>오류</b>\n${esc(msg)}${detail?`\n\n${esc(detail)}`:""}</div>`;
 }
 
 function parseCSV(t){
@@ -77,10 +315,7 @@ function parseCSV(t){
     if(!q&&(x===','||x==='\n'||x==='\r')){
       if(x==='\r'&&n==='\n') continue;
       row.push(c); c="";
-      if (x !== ',') { // ✅ FIX: 문법 오류(!===) → !==
-        r.push(row);
-        row=[];
-      }
+      if (x !== ',') { r.push(row); row=[]; } // ✅ FIXED
       continue;
     }
     c+=x;
@@ -92,7 +327,9 @@ function parseCSV(t){
 function sectionSort(a,b){
   const ia=SECTION_ORDER.indexOf(a);
   const ib=SECTION_ORDER.indexOf(b);
-  if(ia>-1||ib>-1) return (ia>-1?ia:99)-(ib>-1?ib:99);
+  const ra = ia>-1 ? ia : 99;
+  const rb = ib>-1 ? ib : 99;
+  if(ra!==rb) return ra-rb;
   return a.localeCompare(b,"ko");
 }
 
@@ -107,6 +344,38 @@ function savePrev(data){
   }catch{}
 }
 
+function computeTrend(it, prev){
+  const k = it.section+"||"+it.link;
+  if(!prev.has(k)) return { cls:"new", label:"NEW" };
+  const pr = Number(prev.get(k).rank);
+  const cr = Number(it.rank);
+  if(!Number.isFinite(pr) || !Number.isFinite(cr)) return { cls:"same", label:"—" };
+  if(cr < pr) return { cls:"up", label:"↑"+(pr-cr) };
+  if(cr > pr) return { cls:"down", label:"↓"+(cr-pr) };
+  return { cls:"same", label:"—" };
+}
+
+function makeItemRow(it, prev, rankLabel, showSectionPill){
+  const t = computeTrend(it, prev);
+  const a = document.createElement("a");
+  a.className="item";
+  a.href = it.link;
+  a.target = "_blank";
+  a.rel = "noreferrer noopener";
+  a.innerHTML = `
+    <div class="rank">${esc(rankLabel)}</div>
+    <div class="content">
+      <div class="title">${esc(it.title)}</div>
+      <div class="meta">
+        <span class="trend ${t.cls}">${esc(t.label)}</span>
+        ${showSectionPill ? `<span class="pill">${esc(it.section)}</span>` : ``}
+        <span class="pill">${esc(it.publisher)}</span>
+        <span class="pill">점수 ${Number.isFinite(it.total)?it.total:""}</span>
+      </div>
+    </div>`;
+  return a;
+}
+
 /* ================= 메인 ================= */
 (async function(){
   try{
@@ -117,9 +386,8 @@ function savePrev(data){
     }
     const text = await res.text();
 
-    // CSV가 아니라 HTML이 오면 여기서 걸리게끔(간단 감지)
     if (text.trim().startsWith("<!doctype") || text.trim().startsWith("<html")) {
-      showError("CSV 대신 HTML이 내려옵니다. (웹에 게시 CSV 링크가 맞는지/권한이 공개인지 확인)", text.slice(0,200));
+      showError("CSV 대신 HTML이 내려옵니다. (웹에 게시 CSV 링크/공개 설정 확인)", text.slice(0,200));
       return;
     }
 
@@ -129,25 +397,25 @@ function savePrev(data){
       return;
     }
 
-    const h = rows[0].map(x => (x||"").trim());
-    const idx = n => h.indexOf(n);
+    const header = rows[0].map(x => (x||"").trim());
+    const idx = n => header.indexOf(n);
 
     const must = ["runAt","section","rank","totalScore","publisher","title","link"];
-    const missing = must.filter(k => !h.includes(k));
+    const missing = must.filter(k => !header.includes(k));
     if(missing.length){
-      showError("CSV 헤더가 예상과 다릅니다. TOP_SECTION 1행 헤더(runAt/section/...) 확인 필요",
-        "missing: "+missing.join(", ")+"\nheader: "+h.join(" | "));
+      showError("CSV 헤더가 예상과 다릅니다. TOP_SECTION 1행 헤더 확인 필요",
+        "missing: "+missing.join(", ")+"\nheader: "+header.join(" | "));
       return;
     }
 
     const data = rows.slice(1).map(r=>({
-      runAt:r[idx("runAt")],
-      section:(r[idx("section")]||"").trim(),
-      rank:+(r[idx("rank")]||""),
-      total:+(r[idx("totalScore")]||""),
-      publisher:(r[idx("publisher")]||"").trim(),
-      title:(r[idx("title")]||"").trim(),
-      link:(r[idx("link")]||"").trim()
+      runAt: (r[idx("runAt")]||"").trim(),
+      section: (r[idx("section")]||"").trim(),
+      rank: Number(r[idx("rank")]||""),
+      total: Number(r[idx("totalScore")]||""),
+      publisher: (r[idx("publisher")]||"").trim(),
+      title: (r[idx("title")]||"").trim(),
+      link: (r[idx("link")]||"").trim()
     })).filter(x=>x.section && x.title && x.link);
 
     if(!data.length){
@@ -155,11 +423,12 @@ function savePrev(data){
       return;
     }
 
-    // 업데이트 배지(데이터 없을 때 죽지 않게)
     document.getElementById("updateBadge").innerHTML =
       `<span class="dot"></span>업데이트: ${esc(data[0]?.runAt || "알 수 없음")}`;
 
-    // 섹션 목록
+    const prev = loadPrev();
+
+    // ✅ 섹션 옵션
     const sections = [...new Set(data.map(d=>d.section))].sort(sectionSort);
     const sel = document.getElementById("sectionFilter");
     sel.innerHTML = `<option value="">전체 섹션</option>`;
@@ -169,18 +438,46 @@ function savePrev(data){
       sel.appendChild(o);
     });
 
-    const prev = loadPrev();
-    const app = document.getElementById("app");
+    const sortSel = document.getElementById("sort");
+    const sectionsRoot = document.getElementById("sectionsRoot");
+    const topAllList = document.getElementById("topAllList");
+    const topAllCount = document.getElementById("topAllCount");
 
     function render(){
       const q = (document.getElementById("q").value||"").toLowerCase().trim();
       const sf = sel.value;
-      app.innerHTML = "";
+      const sortMode = sortSel.value;
 
-      sections.forEach(sec=>{
-        if(sf && sf!==sec) return;
+      // --- 전체 TOP 10 (모든 섹션 통합) ---
+      const allFiltered = data.filter(d => {
+        if(sf && d.section !== sf) return false;
+        if(!q) return true;
+        return (d.title||"").toLowerCase().includes(q) || (d.publisher||"").toLowerCase().includes(q);
+      });
 
+      const topAll = allFiltered.slice().sort((a,b)=>{
+        // 점수 내림차순 우선, 동점이면 rank 오름차순
+        const ds = (b.total - a.total);
+        if(ds !== 0) return ds;
+        return (a.rank - b.rank);
+      }).slice(0,10);
+
+      topAllList.innerHTML = "";
+      topAllCount.textContent = `${topAll.length}건`;
+
+      topAll.forEach((it, idx0)=>{
+        // 전체 TOP 10은 “전체 순위(1~10)”를 왼쪽 원에 표시
+        topAllList.appendChild(makeItemRow(it, prev, String(idx0+1), true));
+      });
+
+      // --- 섹션별 리스트 ---
+      sectionsRoot.innerHTML = "";
+
+      const targetSections = (sf ? sections.filter(s=>s===sf) : sections);
+
+      targetSections.forEach(sec=>{
         let arr = data.filter(d=>d.section===sec);
+
         if(q){
           arr = arr.filter(d =>
             (d.title||"").toLowerCase().includes(q) ||
@@ -189,50 +486,45 @@ function savePrev(data){
         }
         if(!arr.length) return;
 
-        arr.sort((a,b)=>a.rank-b.rank);
-
-        const det = document.createElement("details");
-        det.className="sec";
-        det.innerHTML = `<summary>
-          <div class="secName">${esc(sec)}</div>
-          <div class="count">${arr.length}건</div>
-        </summary>`;
-
-        arr.forEach(it=>{
-          const k = it.section+"||"+it.link;
-          let t="—", cls="";
-          if(!prev.has(k)){ t="NEW"; cls="new"; }
-          else{
-            const pr = prev.get(k).rank;
-            if(it.rank < pr){ t="↑"+(pr-it.rank); cls="up"; }
-            else if(it.rank > pr){ t="↓"+(it.rank-pr); cls="down"; }
+        // 정렬: 순위 or 점수
+        arr = arr.slice().sort((a,b)=>{
+          if(sortMode === "score"){
+            const ds = (b.total - a.total);
+            if(ds !== 0) return ds;
+            return (a.rank - b.rank);
           }
-
-          const a = document.createElement("a");
-          a.className="item";
-          a.href=it.link;
-          a.target="_blank";
-          a.rel="noreferrer noopener";
-          a.innerHTML = `
-            <div class="rank">${Number.isFinite(it.rank)?it.rank:""}</div>
-            <div style="min-width:0">
-              <div class="title">${esc(it.title)}</div>
-              <div class="meta">
-                <span class="trend ${cls}">${esc(t)}</span>
-                <span class="pill">${esc(it.publisher)}</span>
-                <span class="pill">점수 ${Number.isFinite(it.total)?it.total:""}</span>
-              </div>
-            </div>`;
-          det.appendChild(a);
+          return (a.rank - b.rank);
         });
 
-        app.appendChild(det);
+        const block = document.createElement("div");
+        block.className="block";
+
+        block.innerHTML = `
+          <div class="blockHead">
+            <div>
+              <div class="blockTitle">${esc(sec)}</div>
+              <div class="blockSub">섹션 TOP ${arr.length} (항상 펼침)</div>
+            </div>
+            <div class="count">${arr.length}건</div>
+          </div>
+          <div class="list"></div>
+        `;
+
+        const list = block.querySelector(".list");
+        arr.forEach(it=>{
+          // 섹션 내에서는 원래 rank를 표시(1~10)
+          list.appendChild(makeItemRow(it, prev, Number.isFinite(it.rank)?String(it.rank):"", false));
+        });
+
+        sectionsRoot.appendChild(block);
       });
 
+      // NEW/↑/↓ 비교용 스냅샷 저장(다음 방문 기준)
       savePrev(data);
     }
 
     sel.onchange = render;
+    sortSel.onchange = render;
     document.getElementById("q").oninput = render;
     render();
 
