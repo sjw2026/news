@@ -343,6 +343,7 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSN0ws79-rlmWgs
 const SECTION_ORDER = ["경제","국제","IT","정치","사회"];
 const LS_KEY = "newsranker_prev_v2";
 
+
 /* ================= 유틸 ================= */
 const esc = s => String(s||"")
   .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
@@ -488,6 +489,7 @@ function makeItemRow(it, prev, leftLabel, showSectionChip){
       publisher: (r[idx("publisher")]||"").trim(),
       title: (r[idx("title")]||"").trim(),
       link: (r[idx("link")]||"").trim()
+      publishedAt: (r[i("publishedAt")] || "").trim()
     })).filter(x=>x.section && x.title && x.link);
 
     if(!data.length){
