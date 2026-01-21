@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#0b57d0" />
-  <title>섹션별 TOP 10 뉴스</title>
+  <title>뉴스 TOP</title>
 
   <style>
     :root{
@@ -13,13 +13,14 @@
       --line:rgba(255,255,255,.08);
       --shadow:0 10px 25px rgba(0,0,0,.35);
       --radius:18px;
-      --radius2:14px;
       --good:#2ecc71;
       --up:#4aa3ff;
       --down:#f1c40f;
       --brand:#0b57d0;
       --card:rgba(255,255,255,.05);
       --input:rgba(16,31,56,.72);
+      --chipBg: rgba(255,255,255,.06);
+      --chipLine: rgba(255,255,255,.12);
     }
 
     *{ box-sizing:border-box; }
@@ -37,28 +38,42 @@
       background:rgba(6,11,22,.82);
       backdrop-filter:blur(10px);
       border-bottom:1px solid var(--line);
-      padding:14px;
+      padding:12px 14px;
     }
-    h1{ margin:0; font-size:16px; font-weight:900; letter-spacing:.2px; }
     .badge{
-      display:inline-flex; align-items:center; gap:6px;
-      margin-top:6px;
-      padding:6px 10px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      justify-content:space-between;
+    }
+    .badgeLeft{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
       border-radius:999px;
-      background:rgba(11,87,208,.2);
-      border:1px solid rgba(11,87,208,.4);
-      font-size:12px; font-weight:800;
+      background:rgba(11,87,208,.18);
+      border:1px solid rgba(11,87,208,.35);
+      font-size:12px; font-weight:900;
+      letter-spacing:.1px;
+      max-width:100%;
     }
     .dot{
       width:7px;height:7px;border-radius:50%;
       background:#4aa3ff;
-      box-shadow:0 0 0 4px rgba(74,163,255,.25);
+      box-shadow:0 0 0 4px rgba(74,163,255,.22);
+      flex:0 0 auto;
+    }
+    .badgeText{
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
     }
 
     .wrap{
       max-width:860px;
       margin:0 auto;
-      padding:12px 12px 70px;
+      padding:12px 12px 90px;
     }
 
     .panel{
@@ -93,37 +108,25 @@
       font-size:14px;
       outline:none;
     }
-    .btnIcon{
+
+    /* Sleek icon buttons */
+    .iconBtn{
       flex:0 0 auto;
       width:44px; height:44px;
       border-radius:14px;
       border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.06);
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
       display:flex;
       align-items:center;
       justify-content:center;
       box-shadow:0 10px 25px rgba(0,0,0,.18);
+      transition:transform .08s ease, filter .08s ease, border-color .08s ease;
     }
-    .btnIcon span{
-      font-size:20px;
-      transform: translateY(1px);
-    }
+    .iconBtn:hover{ filter:brightness(1.06); border-color: rgba(255,255,255,.18); }
+    .iconBtn:active{ transform: translateY(1px); }
+    .iconBtn svg{ width:20px; height:20px; opacity:.92; }
 
-    /* Local filter controls */
-    .controlsGrid{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-    select.input{
-      appearance:none;
-    }
-    .controlsGrid > *{
-      flex:1 1 160px;
-    }
-
-    /* Section / blocks */
+    /* Blocks */
     .block{
       margin-top:14px;
       background:var(--card);
@@ -178,14 +181,13 @@
       font-weight:950;
       flex:0 0 auto;
     }
-
     .content{ min-width:0; flex:1 1 auto; }
     .title{
       font-size:14px;
       font-weight:800;
       line-height:1.35;
 
-      /* ✅ 2줄 제한 */
+      /* 2줄 제한 */
       display:-webkit-box;
       -webkit-line-clamp:2;
       -webkit-box-orient:vertical;
@@ -204,8 +206,8 @@
     .pill{
       padding:4px 8px;
       border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
+      border:1px solid var(--chipLine);
+      background:var(--chipBg);
     }
     .trend{
       font-weight:950;
@@ -214,10 +216,25 @@
       border:1px solid rgba(255,255,255,.14);
       background:rgba(255,255,255,.06);
     }
-    .trend.new{ color: #c9ffe2; border-color: rgba(46,204,113,.35); background: rgba(46,204,113,.14); }
-    .trend.up{ color: #d8ecff; border-color: rgba(74,163,255,.35); background: rgba(74,163,255,.14); }
-    .trend.down{ color: #fff3c4; border-color: rgba(241,196,15,.40); background: rgba(241,196,15,.14); }
-    .trend.same{ color: var(--muted); }
+    .trend.new{ color:#c9ffe2; border-color:rgba(46,204,113,.35); background:rgba(46,204,113,.14); }
+    .trend.up{ color:#d8ecff; border-color:rgba(74,163,255,.35); background:rgba(74,163,255,.14); }
+    .trend.down{ color:#fff3c4; border-color:rgba(241,196,15,.40); background:rgba(241,196,15,.14); }
+    .trend.same{ color:var(--muted); }
+
+    /* Section color chips (for TOP ALL) */
+    .secChip{
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      font-weight:900;
+      letter-spacing:.1px;
+    }
+    .sec-경제{ background:rgba(46,204,113,.14); border-color:rgba(46,204,113,.35); color:#c9ffe2; }
+    .sec-국제{ background:rgba(74,163,255,.14); border-color:rgba(74,163,255,.35); color:#d8ecff; }
+    .sec-IT{ background:rgba(155,89,182,.16); border-color:rgba(155,89,182,.40); color:#f0dbff; }
+    .sec-정치{ background:rgba(241,196,15,.14); border-color:rgba(241,196,15,.40); color:#fff3c4; }
+    .sec-사회{ background:rgba(231,76,60,.14); border-color:rgba(231,76,60,.40); color:#ffd6d2; }
+    .sec-기타{ background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16); color:var(--text); }
 
     .error{
       margin-top:14px;
@@ -229,9 +246,21 @@
       white-space:pre-wrap;
     }
 
+    .footerControls{
+      margin-top:16px;
+    }
+    .controlsGrid{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    select.input{ appearance:none; }
+    .controlsGrid > *{ flex:1 1 160px; }
+
     @media (min-width: 720px){
-      header{ padding:16px; }
-      .wrap{ padding:14px 16px 80px; }
+      header{ padding:12px 16px; }
+      .wrap{ padding:14px 16px 90px; }
       .item{ padding:14px 14px; }
       .title{ font-size:15px; }
     }
@@ -240,37 +269,39 @@
 
 <body>
 <header>
-  <h1>섹션별 TOP 10 뉴스</h1>
-  <div class="badge" id="updateBadge"><span class="dot"></span>업데이트: 로딩 중</div>
+  <!-- ✅ 제목 제거: 업데이트만 남김 -->
+  <div class="badge">
+    <div class="badgeLeft" id="updateBadge">
+      <span class="dot"></span>
+      <span class="badgeText">업데이트: 로딩 중</span>
+    </div>
+  </div>
 </header>
 
 <div class="wrap">
 
-  <!-- ✅ 네이버 검색 + 축구공 버튼 -->
+  <!-- ✅ 네이버 검색 + 축구공 버튼 (상단 유지) -->
   <div class="panel">
     <div class="naverRow">
       <form id="naverForm" action="https://search.naver.com/search.naver" method="GET" target="_blank" rel="noreferrer noopener">
         <input class="input" id="naverQuery" name="query" placeholder="네이버에서 검색…" />
-        <button class="btnIcon" type="submit" title="네이버 검색">
-          <span>🔎</span>
+        <!-- ✅ 세련된 검색 버튼 -->
+        <button class="iconBtn" type="submit" title="네이버 검색">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
         </button>
       </form>
 
-      <a class="btnIcon" href="https://m.sports.naver.com/wfootball/news" target="_blank" rel="noreferrer noopener" title="여자축구 뉴스(네이버 스포츠)">
-        <span>⚽</span>
+      <!-- 축구공 아이콘 버튼 -->
+      <a class="iconBtn" href="https://m.sports.naver.com/wfootball/news" target="_blank" rel="noreferrer noopener" title="여자축구 뉴스(네이버 스포츠)">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="currentColor" stroke-width="2"/>
+          <path d="M12 7.2 9.2 9.1l1 3.2h3.6l1-3.2L12 7.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M9.2 9.1 6.5 8.5m8.3.6 2.7-.6m-7.3 3.8-2.2 2.6m7.4-2.6 2.2 2.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
       </a>
-    </div>
-
-    <!-- ✅ 로컬 필터(섹션/검색) -->
-    <div class="controlsGrid">
-      <select class="input" id="sectionFilter">
-        <option value="">전체 섹션</option>
-      </select>
-      <input class="input" id="q" placeholder="이 페이지에서 검색 (제목/언론사)" />
-      <select class="input" id="sort">
-        <option value="rank">정렬: 순위</option>
-        <option value="score">정렬: 점수</option>
-      </select>
     </div>
   </div>
 
@@ -286,8 +317,23 @@
     <div id="topAllList"></div>
   </div>
 
-  <!-- ✅ 섹션 블록이 이 아래에 렌더링 -->
+  <!-- ✅ 섹션 블록 렌더 -->
   <div id="sectionsRoot"></div>
+
+  <!-- ✅ (5) 섹션/언론사 등 검색 기능: 가장 하단으로 이동 -->
+  <div class="panel footerControls">
+    <div style="font-weight:900; font-size:13px;">필터 · 검색</div>
+    <div class="controlsGrid">
+      <select class="input" id="sectionFilter">
+        <option value="">전체 섹션</option>
+      </select>
+      <input class="input" id="q" placeholder="이 페이지에서 검색 (제목/언론사)" />
+      <select class="input" id="sort">
+        <option value="rank">정렬: 순위</option>
+        <option value="score">정렬: 점수</option>
+      </select>
+    </div>
+  </div>
 
 </div>
 
@@ -295,7 +341,7 @@
 /* ================= 설정 ================= */
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSN0ws79-rlmWgsTFRzGqsqN1FFDt_jz__Ot8pVLF58vD8gB99hrgJCFx-_dcSqAJ9oFjKRw-icxTBw/pub?single=true&output=csv&gid=669685207";
 const SECTION_ORDER = ["경제","국제","IT","정치","사회"];
-const LS_KEY = "newsranker_prev_v1";
+const LS_KEY = "newsranker_prev_v2";
 
 /* ================= 유틸 ================= */
 const esc = s => String(s||"")
@@ -315,7 +361,7 @@ function parseCSV(t){
     if(!q&&(x===','||x==='\n'||x==='\r')){
       if(x==='\r'&&n==='\n') continue;
       row.push(c); c="";
-      if (x !== ',') { r.push(row); row=[]; } // ✅ FIXED
+      if (x !== ',') { r.push(row); row=[]; }
       continue;
     }
     c+=x;
@@ -331,6 +377,32 @@ function sectionSort(a,b){
   const rb = ib>-1 ? ib : 99;
   if(ra!==rb) return ra-rb;
   return a.localeCompare(b,"ko");
+}
+
+function secClass(section){
+  if(section === "경제") return "sec-경제";
+  if(section === "국제") return "sec-국제";
+  if(section === "IT") return "sec-IT";
+  if(section === "정치") return "sec-정치";
+  if(section === "사회") return "sec-사회";
+  return "sec-기타";
+}
+
+function formatUpdateText(runAtStr){
+  // runAt이 ISO/Date 문자열이면 KST로 보기 좋게 표시
+  // 파싱 실패 시 문자열 그대로
+  const s = String(runAtStr||"").trim();
+  if(!s) return "";
+  const d = new Date(s);
+  if(!isNaN(d.getTime())){
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    const da = String(d.getDate()).padStart(2,"0");
+    const hh = String(d.getHours()).padStart(2,"0");
+    const mm = String(d.getMinutes()).padStart(2,"0");
+    return `${y}-${m}-${da} ${hh}:${mm}`;
+  }
+  return s;
 }
 
 function loadPrev(){
@@ -355,7 +427,7 @@ function computeTrend(it, prev){
   return { cls:"same", label:"—" };
 }
 
-function makeItemRow(it, prev, rankLabel, showSectionPill){
+function makeItemRow(it, prev, leftLabel, showSectionChip){
   const t = computeTrend(it, prev);
   const a = document.createElement("a");
   a.className="item";
@@ -363,12 +435,12 @@ function makeItemRow(it, prev, rankLabel, showSectionPill){
   a.target = "_blank";
   a.rel = "noreferrer noopener";
   a.innerHTML = `
-    <div class="rank">${esc(rankLabel)}</div>
+    <div class="rank">${esc(leftLabel)}</div>
     <div class="content">
       <div class="title">${esc(it.title)}</div>
       <div class="meta">
         <span class="trend ${t.cls}">${esc(t.label)}</span>
-        ${showSectionPill ? `<span class="pill">${esc(it.section)}</span>` : ``}
+        ${showSectionChip ? `<span class="secChip ${secClass(it.section)}">${esc(it.section)}</span>` : ``}
         <span class="pill">${esc(it.publisher)}</span>
         <span class="pill">점수 ${Number.isFinite(it.total)?it.total:""}</span>
       </div>
@@ -387,13 +459,13 @@ function makeItemRow(it, prev, rankLabel, showSectionPill){
     const text = await res.text();
 
     if (text.trim().startsWith("<!doctype") || text.trim().startsWith("<html")) {
-      showError("CSV 대신 HTML이 내려옵니다. (웹에 게시 CSV 링크/공개 설정 확인)", text.slice(0,200));
+      showError("CSV 대신 HTML이 내려옵니다. (웹에 게시 CSV 링크/공개 설정 확인)", text.slice(0,220));
       return;
     }
 
     const rows = parseCSV(text);
     if(!rows.length || rows.length < 2){
-      showError("CSV 파싱 결과가 비어 있습니다.", text.slice(0,200));
+      showError("CSV 파싱 결과가 비어 있습니다.", text.slice(0,220));
       return;
     }
 
@@ -419,16 +491,19 @@ function makeItemRow(it, prev, rankLabel, showSectionPill){
     })).filter(x=>x.section && x.title && x.link);
 
     if(!data.length){
-      showError("데이터가 0건입니다. TOP_SECTION 시트에 값이 채워져 있는지 확인하세요.", text.slice(0,200));
+      showError("데이터가 0건입니다. TOP_SECTION 시트에 값이 채워져 있는지 확인하세요.", text.slice(0,220));
       return;
     }
 
+    // ✅ 업데이트: 날짜+시각 표시
+    const runAtPretty = formatUpdateText(data[0]?.runAt || "");
+    const fallbackNow = formatUpdateText(new Date().toISOString());
     document.getElementById("updateBadge").innerHTML =
-      `<span class="dot"></span>업데이트: ${esc(data[0]?.runAt || "알 수 없음")}`;
+      `<span class="dot"></span><span class="badgeText">업데이트: ${esc(runAtPretty || fallbackNow)}</span>`;
 
     const prev = loadPrev();
 
-    // ✅ 섹션 옵션
+    // 섹션 옵션(하단 필터)
     const sections = [...new Set(data.map(d=>d.section))].sort(sectionSort);
     const sel = document.getElementById("sectionFilter");
     sel.innerHTML = `<option value="">전체 섹션</option>`;
@@ -448,7 +523,7 @@ function makeItemRow(it, prev, rankLabel, showSectionPill){
       const sf = sel.value;
       const sortMode = sortSel.value;
 
-      // --- 전체 TOP 10 (모든 섹션 통합) ---
+      // 전체 TOP 10 (필터 적용)
       const allFiltered = data.filter(d => {
         if(sf && d.section !== sf) return false;
         if(!q) return true;
@@ -456,7 +531,6 @@ function makeItemRow(it, prev, rankLabel, showSectionPill){
       });
 
       const topAll = allFiltered.slice().sort((a,b)=>{
-        // 점수 내림차순 우선, 동점이면 rank 오름차순
         const ds = (b.total - a.total);
         if(ds !== 0) return ds;
         return (a.rank - b.rank);
@@ -466,11 +540,10 @@ function makeItemRow(it, prev, rankLabel, showSectionPill){
       topAllCount.textContent = `${topAll.length}건`;
 
       topAll.forEach((it, idx0)=>{
-        // 전체 TOP 10은 “전체 순위(1~10)”를 왼쪽 원에 표시
-        topAllList.appendChild(makeItemRow(it, prev, String(idx0+1), true));
+        topAllList.appendChild(makeItemRow(it, prev, String(idx0+1), true)); // ✅ 섹션 색상칩 표시
       });
 
-      // --- 섹션별 리스트 ---
+      // 섹션별 블록(항상 펼침)
       sectionsRoot.innerHTML = "";
 
       const targetSections = (sf ? sections.filter(s=>s===sf) : sections);
@@ -503,7 +576,7 @@ function makeItemRow(it, prev, rankLabel, showSectionPill){
           <div class="blockHead">
             <div>
               <div class="blockTitle">${esc(sec)}</div>
-              <div class="blockSub">섹션 TOP ${arr.length} (항상 펼침)</div>
+              <div class="blockSub">섹션 TOP ${arr.length}</div>
             </div>
             <div class="count">${arr.length}건</div>
           </div>
@@ -512,19 +585,18 @@ function makeItemRow(it, prev, rankLabel, showSectionPill){
 
         const list = block.querySelector(".list");
         arr.forEach(it=>{
-          // 섹션 내에서는 원래 rank를 표시(1~10)
           list.appendChild(makeItemRow(it, prev, Number.isFinite(it.rank)?String(it.rank):"", false));
         });
 
         sectionsRoot.appendChild(block);
       });
 
-      // NEW/↑/↓ 비교용 스냅샷 저장(다음 방문 기준)
+      // 스냅샷 저장
       savePrev(data);
     }
 
-    sel.onchange = render;
-    sortSel.onchange = render;
+    document.getElementById("sectionFilter").onchange = render;
+    document.getElementById("sort").onchange = render;
     document.getElementById("q").oninput = render;
     render();
 
