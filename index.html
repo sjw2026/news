@@ -22,6 +22,7 @@
       --chipBg: rgba(255,255,255,.06);
       --chipLine: rgba(255,255,255,.12);
     }
+
     *{ box-sizing:border-box; }
     body{
       margin:0;
@@ -170,6 +171,7 @@
       font-weight:800;
       line-height:1.35;
 
+      /* 2줄 제한 */
       display:-webkit-box;
       -webkit-line-clamp:2;
       -webkit-box-orient:vertical;
@@ -315,6 +317,9 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSN0ws79-rlmWgs
 const SECTION_ORDER = ["경제","국제","IT","정치","사회"];
 const LS_KEY = "newsranker_prev_v2";
 
+/* ✅ 제목 제한: 최대 50자 + 의미 단위(공백/구두점/조사) 고려 */
+const TITLE_MAX = 50;
+
 /* ================= 유틸 ================= */
 const esc = s => String(s||"")
   .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
@@ -364,10 +369,8 @@ function secClass(section){
 function formatUpdateText(runAtStr){
   const s = String(runAtStr||"").trim();
   if(!s) return "";
-  // 이미 "yyyy-MM-dd HH:mm" 형태면 그대로 사용
   if(/^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}$/.test(s)) return s;
 
-  // 그 외(ISO 등)만 Date 파싱 시도
   const d = new Date(s);
   if(!isNaN(d.getTime())){
     const y = d.getFullYear();
@@ -380,6 +383,79 @@ function formatUpdateText(runAtStr){
   return s;
 }
 
+/* ================= 제목 자르기(50자, 의미 단위) =================
+   우선순위:
+   1) 50자 이내면 그대로
+   2) 50자 안쪽에서 "마지막 공백" 지점으로 자르기
+   3) 없으면 50자 안쪽에서 "구두점(… · , . : ; ! ? )" 뒤로 자르기
+   4) 그래도 없으면 50자 칼자르기
+   5) 끝이 조사진행(은/는/이/가/을/를/에/의/와/과/도/만/으로/에서/에게/까지/부터/처럼/보다/등)로 끝나면 한 번 더 뒤로 물러남
+*/
+function cutTitleSmart(s, max = TITLE_MAX){
+  const t = String(s || "").replace(/\s+/g," ").trim();
+  if(t.length <= max) return t;
+
+  const head = t.slice(0, max);
+
+  // 후보 커트 인덱스(문자열 길이 기준)
+  let cut = -1;
+
+  // 1) 공백 기준(가장 자연스러움)
+  cut = head.lastIndexOf(" ");
+  if(cut >= Math.floor(max * 0.6)) {
+    return tidyCut_(t.slice(0, cut)) + "…";
+  }
+
+  // 2) 구두점 기준
+  const punct = ["…","·",",",".",":",";","!","?","）",")","]","}"];
+  for(const p of punct){
+    const j = head.lastIndexOf(p);
+    if(j > cut) cut = j + 1; // 구두점 포함
+  }
+  if(cut >= Math.floor(max * 0.6)) {
+    return tidyCut_(t.slice(0, cut)) + "…";
+  }
+
+  // 3) fallback: 칼자르기
+  return tidyCut_(head) + "…";
+}
+
+function tidyCut_(x){
+  let s = String(x||"").replace(/\s+/g," ").trim();
+
+  // 끝이 따옴표/괄호 열림이면 제거
+  s = s.replace(/[\(\[\{“‘'"]+$/g, "").trim();
+
+  // 조사/의존 형태소로 끝나면 조금 더 뒤로(가능할 때만)
+  // (너무 과하면 제목이 너무 줄어드니 1~2회만 후퇴)
+  const josa = [
+    "은","는","이","가","을","를","에","의","와","과","도","만",
+    "으로","로","에서","에게","까지","부터","처럼","보다","등",
+    "및","또는","혹은"
+  ];
+
+  for(let k=0;k<2;k++){
+    const m = s.match(/([가-힣A-Za-z0-9]+)\s*$/);
+    if(!m) break;
+
+    // 마지막 토큰(단어) 추출
+    const lastToken = m[1];
+    // 단어가 조사 자체이거나, 조사로 끝나는 경우(예: "다음", "에서" 등은 오탐 위험)
+    // => 공백으로 분리된 "조사 단독"일 때만 강하게 후퇴
+    const parts = s.split(" ");
+    const last = parts[parts.length-1];
+    if(josa.includes(last)){
+      parts.pop();
+      s = parts.join(" ").trim();
+      continue;
+    }
+    break;
+  }
+
+  return s;
+}
+
+/* ================= prev rank ================= */
 function loadPrev(){
   try{
     return new Map(JSON.parse(localStorage.getItem(LS_KEY)||"[]").map(x=>[x.section+"||"+x.link,x]));
@@ -415,13 +491,13 @@ function makeItemRow(it, prev, leftLabel, showSectionChip){
   a.innerHTML = `
     <div class="rank">${esc(leftLabel)}</div>
     <div class="content">
-      <div class="title">${esc(it.title)}</div>
+      <div class="title">${esc(cutTitleSmart(it.title))}</div>
       <div class="meta">
         <span class="trend ${t.cls}">${esc(t.label)}</span>
         ${showSectionChip ? `<span class="secChip ${secClass(it.section)}">${esc(it.section)}</span>` : ``}
         <span class="pill">${esc(it.publisher)}</span>
         <span class="pill">점수 ${Number.isFinite(it.total)?it.total:""}</span>
-        ${pubTime ? `<span class="pill"> ${esc(pubTime)}</span>` : ``}
+        ${pubTime ? `<span class="pill">출고 ${esc(pubTime)}</span>` : ``}
       </div>
     </div>`;
   return a;
@@ -506,7 +582,6 @@ function makeItemRow(it, prev, leftLabel, showSectionChip){
       const sf = sel.value;
       const sortMode = sortSel.value;
 
-      // 전체 TOP 10 (필터 적용)
       const allFiltered = data.filter(d => {
         if(sf && d.section !== sf) return false;
         if(!q) return true;
@@ -525,7 +600,6 @@ function makeItemRow(it, prev, leftLabel, showSectionChip){
         topAllList.appendChild(makeItemRow(it, prev, String(i0+1), true));
       });
 
-      // 섹션별 블록(항상 펼침)
       sectionsRoot.innerHTML = "";
       const targetSections = (sf ? sections.filter(s=>s===sf) : sections);
 
@@ -585,4 +659,3 @@ function makeItemRow(it, prev, leftLabel, showSectionChip){
 </script>
 </body>
 </html>
-
