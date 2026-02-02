@@ -40,7 +40,19 @@
       border-bottom:1px solid var(--line);
       padding:12px 14px;
     }
+
     .badge{ display:flex; align-items:center; gap:10px; justify-content:space-between; }
+
+    /* ✅ 업데이트 배지 + 우측 버튼들 한 줄 */
+    .badgeRight{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+      flex:1 1 auto;
+      justify-content:space-between;
+    }
+
     .badgeLeft{
       display:inline-flex;
       align-items:center;
@@ -52,7 +64,9 @@
       font-size:12px; font-weight:900;
       letter-spacing:.1px;
       max-width:100%;
+      min-width:0;
     }
+
     .dot{
       width:7px;height:7px;border-radius:50%;
       background:#4aa3ff;
@@ -60,6 +74,14 @@
       flex:0 0 auto;
     }
     .badgeText{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+    /* ✅ 헤더 우측 아이콘 버튼 묶음 */
+    .badgeActions{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex:0 0 auto;
+    }
 
     .wrap{
       max-width:860px;
@@ -110,6 +132,17 @@
     .iconBtn:hover{ filter:brightness(1.06); border-color: rgba(255,255,255,.18); }
     .iconBtn:active{ transform: translateY(1px); }
     .iconBtn svg{ width:20px; height:20px; opacity:.92; }
+
+    /* ✅ H 마크(텍스트) */
+    .hMark{
+      font-weight:950;
+      font-size:16px;
+      line-height:1;
+      letter-spacing:-.02em;
+      opacity:.92;
+      transform: translateY(-.5px);
+      user-select:none;
+    }
 
     .block{
       margin-top:14px;
@@ -251,9 +284,34 @@
 <body>
 <header>
   <div class="badge">
-    <div class="badgeLeft" id="updateBadge">
-      <span class="dot"></span>
-      <span class="badgeText">업데이트: 로딩 중</span>
+    <!-- ✅ 업데이트 배지 + 헤더 우측 버튼 -->
+    <div class="badgeRight">
+      <div class="badgeLeft" id="updateBadge">
+        <span class="dot"></span>
+        <span class="badgeText">업데이트: 로딩 중</span>
+      </div>
+
+      <div class="badgeActions" aria-label="헤더 바로가기">
+        <!-- 해외축구(업데이트 시각 옆으로 이동) -->
+        <a class="iconBtn"
+           href="https://m.sports.naver.com/wfootball/news?sectionId=epl&sort=latest&isPhoto=N"
+           target="_blank" rel="noreferrer noopener"
+           title="해외축구 뉴스(네이버 스포츠)" aria-label="해외축구">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 7.2 9.2 9.1l1 3.2h3.6l1-3.2L12 7.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9.2 9.1 6.5 8.5m8.3.6 2.7-.6m-7.3 3.8-2.2 2.6m7.4-2.6 2.2 2.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </a>
+
+        <!-- ✅ H 버튼(홍형IT뉴스) -->
+        <a class="iconBtn"
+           href="https://hong4137.github.io/briefing/index.html"
+           target="_blank" rel="noreferrer noopener"
+           title="홍형IT뉴스" aria-label="홍형IT뉴스">
+          <span class="hMark" aria-hidden="true">H</span>
+        </a>
+      </div>
     </div>
   </div>
 </header>
@@ -264,7 +322,7 @@
     <div class="naverRow">
       <form id="naverForm" action="https://search.naver.com/search.naver" method="GET" target="_blank" rel="noreferrer noopener">
         <input class="input" id="naverQuery" name="query" placeholder="네이버에서 검색…" />
-        <button class="iconBtn" type="submit" title="네이버 검색">
+        <button class="iconBtn" type="submit" title="네이버 검색" aria-label="네이버 검색">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="2"/>
             <path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -272,13 +330,7 @@
         </button>
       </form>
 
-      <a class="iconBtn" href="https://m.sports.naver.com/wfootball/news" target="_blank" rel="noreferrer noopener" title="여자축구 뉴스(네이버 스포츠)">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="currentColor" stroke-width="2"/>
-          <path d="M12 7.2 9.2 9.1l1 3.2h3.6l1-3.2L12 7.2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M9.2 9.1 6.5 8.5m8.3.6 2.7-.6m-7.3 3.8-2.2 2.6m7.4-2.6 2.2 2.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </a>
+      <!-- ✅ (이전 위치) 해외축구 버튼 제거됨 -->
     </div>
   </div>
 
@@ -440,8 +492,9 @@ function tidyCut_(x){
 
     // 마지막 토큰(단어) 추출
     const lastToken = m[1];
-    // 단어가 조사 자체이거나, 조사로 끝나는 경우(예: "다음", "에서" 등은 오탐 위험)
-    // => 공백으로 분리된 "조사 단독"일 때만 강하게 후퇴
+    void(lastToken);
+
+    // 단어가 조사 자체이거나, 공백으로 분리된 "조사 단독"일 때만 후퇴
     const parts = s.split(" ");
     const last = parts[parts.length-1];
     if(josa.includes(last)){
